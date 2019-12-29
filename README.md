@@ -1,4 +1,4 @@
-# MySQL-PalyGround
+# MySQL-PlayGround
 Repositorio de reforzamiento de conocimiento acerca de MySQL
 
 
