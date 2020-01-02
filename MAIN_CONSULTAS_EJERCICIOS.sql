@@ -425,3 +425,402 @@ CASE  PROD.Prod_Status
 FROM  productos PROD
 
 
+
+
+
+
+-- funcion SUBSTR (SUB STRING)
+
+/*
+
+DEFINICIÓN:
+SUB STRING SUBSTR lo que que hace es tomar una proción de un campo de texto y lo muestra en una columna.
+por ejemplo si queremos tomar los 10 primeros carácteres del  productos.PRO_Descripción podríamos hacer algo así:
+
+
+
+
+*/
+
+SELECT 
+PROD.Prod_Id AS ID_PRODUCTO,
+SUBSTR(PROD.Prod_Descripcion,1,10) AS DESCRIPCION,
+
+CASE  PROD.Prod_Status 
+       WHEN 1 THEN   'EN INVENTARIO'
+       WHEN 2 THEN   'AGOTADO'
+       END AS 'ESTADO'
+
+FROM  productos PROD
+
+
+
+-- Variación CASE + SUBTR 
+
+/*
+Con el uso de case +substr se est[a evaluando el primer car[acter que viene en la descripci[on del producto
+y se crea una columna extra en base a lo anterior expresado, en la que se desplegara "Producto inicia con A" 
+si el nombre de producto en verdad comienza con la letra A...
+ 
+*/
+SELECT 
+PROD.Prod_Id AS ID_PRODUCTO,
+SUBSTR(PROD.Prod_Descripcion,1,10) AS DESCRIPCION,
+CASE  SUBSTR(PROD.Prod_Descripcion,1,1)
+       WHEN 'A' THEN   'PRODUCTO INICIA CON A'
+       WHEN 'B' THEN   'PRODUCTO INICIA CON B'
+       END AS 'INICIAL'
+
+
+FROM  productos PROD
+
+
+
+-- Podemos usar UCASE para convertir texto en mayúsculas completamente
+
+
+
+
+-- Para saber la fecha actual
+
+ SELECT CURDATE()
+ 
+ 
+-- saber hora actual
+ SELECT CURTIME()
+
+-- Saber fecha y hora
+
+SELECT CURRENT_TIMESTAMP
+
+
+-- Saber nombre de la base de datos que usamos
+
+SELECT DATABASE(), PROD.PROD_DESCRIPCION
+FROM PRODUCTOS PROD
+
+-- Saber la cantidad en días entre una fecha x y una fecha Y
+
+
+SELECT DATEDIFF ('2018-11-22','2019-11-22') Diferencia_NDias
+
+
+-- La fecha futura va primero para evitar valores en negativo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- SENTENCIA INSERT
+
+/*Nos permite insertar datos en nuestras tablas*/
+
+
+INSERT INTO departamentos (Id, Nombre ) VALUES
+
+('01', 'Soporte Técnico')
+
+
+
+SELECT * FROM departamentos
+
+
+
+
+-- SETENCIA UPDATE
+
+/*Nos permite actualizar datos existentes en una tabla*/
+
+UPDATE  departamentos
+SET Nombre = 'Technical Support'
+WHERE departamentos.id = 1 
+
+
+-- Actualizando el precio de todos los productos SIN WHERE
+/*Esto es delicado ya que estamos actualizando todos los productos de la tabla de productos*/
+ 
+
+UPDATE productos PROD
+SET PROD.Prod_Status = 0
+
+SELECT * FROM  productos
+
+
+
+-- Actualizar el estatus de los productos que sean mayor a cero
+
+UPDATE productos PROD
+SET PROD.Prod_Status = 1
+WHERE prod. Prod_Precio > 0
+
+
+
+
+--Actualizar mas de 1 campo
+
+
+UPDATE productos PROD
+SET PROD.Prod_Status = 1, PROD.
+WHERE prod. Prod_Precio > 0
+
+
+
+/*Añadimos 2 columnas extras a nuestra tabla para probar el actualizar 2 campos*/
+
+ALTER TABLE PRODUCTOS
+
+ADD  Prod_VentaSuspendida TINYINT
+AFTER Prod_Status , 
+ADD Prod_CompraSuspendida TINYINT
+AFTER Prod_VentaSuspendida ;
+
+
+ALTER TABLE PROVEEDORES
+
+ADD  Prov_VentaSuspendida TINYINT
+AFTER Prov_Nombre , 
+ADD Prod_CompraSuspendida TINYINT
+AFTER Prov_VentaSuspendida ;
+
+ALTER TABLE PROVEEDORES
+RENAME COLUMN  ProV_CompraSuspendida TO Prov_CompraSuspendida
+
+/*Setereamos esos campos con valor de cero sin WHERE ya que queremos hacerlo para todos los productos */
+
+UPDATE PRODUCTOS
+
+SET Prod_VentaSuspendida = 0, Prod_CompraSuspendida = 0
+
+UPDATE PROVEEDORES
+
+SET Prov_VentaSuspendida = 0, Prov_CompraSuspendida = 0
+
+
+SELECT  * FROM proveedores
+
+
+
+----------------------------------------------------------------
+-- ACTUALIZAR Prod_VentaSuspendida Y Prod_CompraSuspendida cuando el precio sea mayor a cero
+----------------------------------------------------------------
+
+
+UPDATE PRODUCTOS 
+
+SET Prod_VentaSuspendida = 1, Prod_CompraSuspendida = 1
+WHERE Prod_precio > 0
+
+
+SELECT * FROM PRODUCTOS
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+-- ACTUALIZAR el precio de los productos cuyo proveedor ID tenga 1 en compra suspendida desde la tabla proveedores
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+UPDATE PRODUCTOS PROD
+
+SET PROD.Prod_PRECIO = 350 
+WHERE Prod_ProvId IN (SELECT PROV.Prov_Id FROM proveedores PROV WHERE PROV.Prov_CompraSuspendida =  1)
+
+
+
+
+
+
+--verificando
+
+SELECT * FROM PRODUCTOS WHERE Prod_Precio = 350
+
+SELECT * FROM PROVEEDORES WHERE Prov_Id = 4
+
+
+SELECT * FROM proveedores
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--INSTRUCCIÓN DELETE
+
+
+/*Nos permite borrar registros de una tabla  con o sin condiciones que se cumplan para llevar a cabo dicha operación*/
+
+
+--vamos a borrar un DEPARTAMENTO de la tabla DEPARTAMENTOS de la DB TESTJOIN
+-- Borraremos el departamento Technical Support que tiene el ID 1
+
+DELETE FROM DEPARTAMENTOS  WHERE ID = 1
+
+
+SELECT * FROM DEPARTAMENTOS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--SUBCONSULTAS
+
+/*
+Se pueden definir como sentencias SQL dentro de otras sentencias SQL
+*/
+
+
+
+SELECT 
+PROD.Prod_Id AS 'Articulo',
+PROD.Prod_descripcion AS 'Descripción'
+FROM Productos PROD
+
+WHERE PROD.Prod_Id = 1633
+
+
+
+
+
+-- aplicando sub consulta 
+
+SELECT 
+Prod_Id AS 'Articulo',
+Prod_descripcion AS 'Descripción',
+(SELECT MAX(Ventas_Fecha) AS UltF FROM Ventas
+  JOIN VENTAS_DETALLE ON VENTAS_ID =VD_VENTASID
+  WHERE Prod_Id = 1633 ) AS CALCULO
+FROM Productos 
+
+WHERE PROD.Prod_Id = 1633
+ 
+ 
+ --OBTENER LA ULTIME FECHA EN QUE SE VENDIO EL PRODUCTO CON EL ID1633
+ 
+SELECT 
+PROD.Prod_Id AS 'Articulo',
+PROD.Prod_descripcion AS 'Descripción',
+MAX(Ventas_Fecha) AS UltFecha_Venta
+
+FROM Productos PROD
+JOIN Ventas_detalle VD  ON (VD.VD_ProdId = PROD.Prod_Id )
+JOIN ventas V ON (V.Ventas_Id = VD.VD_VENTASID)
+WHERE  Prod_Id = 1633
+
+
+--fin
+
+SELECT 
+PROD.Prod_Id AS 'Articulo',
+PROD.Prod_descripcion AS 'Descripción',
+(
+SELECT MAX(V.Ventas_Fecha) AS UltFecha_Venta FROM Ventas V
+ JOIN Ventas_detalle VD ON (V.Ventas_Id = VD.VD_VENTASID)
+) AS Ult_Fecha_Venta
+
+FROM Productos PROD
+WHERE  Prod_Id = 1633
+
+
+JOIN Ventas_detalle VD  ON (VD.VD_ProdId = PROD.Prod_Id )
+JOIN ventas V ON (V.Ventas_Id = VD.VD_VENTASID)
+WHERE  Prod_Id = 1633
+
+a
+
+
+
+SELECT * FROM VENTAS
+
+SELECT * FROM VENTAS_DETALLE
+
+SELECT * FROM PRODUCTOS
+
+SELECT * FROM PROVEEDORES
+
+
+/*
+Estamos obteniendo la fecha de la última venta del producto desde la tabla ventas,
+hay que hacer un join a ventas detalle ya que es donde se almacena el id de la venta y sobre todo el id
+del producto asociado a la venta misma por ende la relación entre ambas tablas se hace necesaria
+
+
+ VENTAS --> OBTENEMOS LA ÚLTIMA FECHA EN QUE SE VENDIO EL PRODUCTO
+ VENTAS_DETALLE --> OBTENEMOS LA VENTA ASOCIADA AL PRODUCTO Y CON ELLA SE VALIDA LA FECHA DE LA ÚLTIMA VENTA DEL PRODUCTO ID DESEADO
+ 
+ 
+*/
+
+
+
+
+
+
+
+
+SELECT * FROM ventas_detalle
+
+CREATE TABLE Permisos
+(
+Permiso TINYINT (3) UNSIGNED DEFAULT '1'
+)
+
+
+
+
+
+
+
+
+
+--Ejemplo 
+
+CREATE TABLE MyGuests (
+id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+firstname VARCHAR(30) NOT NULL,
+lastname VARCHAR(30) NOT NULL,
+email VARCHAR(50),
+reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
+
+
+---
